@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(docker-compose logs:*)",
+      "WebFetch(domain:ai.google.dev)",
+      "WebSearch",
+      "Bash(docker-compose restart:*)",
+      "Bash(docker compose:*)"
+    ]
+  }
+}

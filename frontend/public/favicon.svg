@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="docGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Document shape -->
+  <path d="M8 3C6.89543 3 6 3.89543 6 5V27C6 28.1046 6.89543 29 8 29H24C25.1046 29 26 28.1046 26 27V9L20 3H8Z" fill="url(#docGradient)"/>
+
+  <!-- Folded corner -->
+  <path d="M20 3V7C20 8.10457 20.8954 9 22 9H26L20 3Z" fill="#1e40af" opacity="0.8"/>
+
+  <!-- Document lines -->
+  <line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+  <line x1="10" y1="18" x2="22" y2="18" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="10" y1="22" x2="18" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- AI Sparkle -->
+  <circle cx="23" cy="24" r="5" fill="#60a5fa" opacity="0.9"/>
+  <path d="M23 21 L23 27 M20 24 L26 24" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M21 22 L25 26 M25 22 L21 26" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+</svg>

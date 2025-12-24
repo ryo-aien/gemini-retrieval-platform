@@ -1,4 +1,4 @@
-# NotebookLM Clone - Document Interaction System
+# Document Interaction System
 
 NotebookLMライクなドキュメント対話システム。Google Gemini File Search APIを使用して、複数のドキュメントに対してAIによる質問応答とレポート生成を行います。
 
@@ -63,7 +63,7 @@ NotebookLMライクなドキュメント対話システム。Google Gemini File 
 1. **リポジトリをクローン**
 ```bash
 git clone <repository-url>
-cd notebooklm-clone
+cd gemini-retrieval-platform
 ```
 
 2. **環境変数を設定**

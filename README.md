@@ -239,9 +239,6 @@ notebooklm-clone/
 - `.env`ファイルが存在するか確認
 - ポート8000と5173が使用可能か確認
 
-## ライセンス
-
-MIT License
 
 ## 開発者向け情報
 
@@ -273,10 +270,3 @@ npm test
 docker-compose -f docker-compose.prod.yml up --build
 ```
 
-## 貢献
-
-プルリクエストを歓迎します。大きな変更の場合は、まずissueを開いて変更内容を議論してください。
-
-## サポート
-
-問題が発生した場合は、GitHubのIssuesで報告してください。

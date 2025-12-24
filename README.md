@@ -2,6 +2,10 @@
 
 NotebookLMライクなドキュメント対話システム。Google Gemini File Search APIを使用して、複数のドキュメントに対してAIによる質問応答とレポート生成を行います。
 
+## スクリーンショット
+
+![アプリケーション画面](./frontend/public/screenshot.png)
+
 ## 主要機能
 
 ### 1. ソース管理機能

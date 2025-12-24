@@ -1,6 +1,6 @@
 # Document Interaction System
 
-NotebookLMライクなドキュメント対話システム。Google Gemini File Search APIを使用して、複数のドキュメントに対してAIによる質問応答とレポート生成を行います。
+ドキュメント対話システム。Google Gemini File Search APIを使用して、複数のドキュメントに対してAIによる質問応答とレポート生成を行います。
 
 ## スクリーンショット
 
@@ -167,7 +167,7 @@ npm run dev
 ## プロジェクト構造
 
 ```
-notebooklm-clone/
+gemini-retrieval-platform/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py                 # FastAPIアプリケーション

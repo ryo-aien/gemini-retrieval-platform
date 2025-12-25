@@ -173,29 +173,29 @@ class GeminiService:
                 print(f"Citation documents: {[c.document_name for c in citations]}")
 
             # Check if grounding metadata exists
-            candidates = response_data.get('candidates', [])
-            has_grounding = False
-            if candidates:
-                grounding = candidates[0].get('groundingMetadata', {})
-                if grounding and grounding.get('fileSearchResults'):
-                    has_grounding = True
+#             candidates = response_data.get('candidates', [])
+#             has_grounding = False
+#             if candidates:
+#                 grounding = candidates[0].get('groundingMetadata', {})
+#                 if grounding and grounding.get('fileSearchResults'):
+#                     has_grounding = True
 
-            # If no grounding metadata found, it means File Search was not used
-            # Override response to indicate no information found in documents
-            if not has_grounding:
-                print("WARNING: No grounding metadata found - AI may have used general knowledge")
-                # Check if the response already indicates document unavailability
-                if "申し訳ございません" not in response_text and \
-                   "見つかりませんでした" not in response_text:
-                    response_text = """申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。
+#             # If no grounding metadata found, it means File Search was not used
+#             # Override response to indicate no information found in documents
+#             if not has_grounding:
+#                 print("WARNING: No grounding metadata found - AI may have used general knowledge")
+#                 # Check if the response already indicates document unavailability
+#                 if "申し訳ございません" not in response_text and \
+#                    "見つかりませんでした" not in response_text:
+#                     response_text = """申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。
 
-以下をご確認ください：
-- 関連するドキュメントがアップロードされているか
-- ドキュメントが正常に処理され、STATE_ACTIVEになっているか
-- 質問の内容がドキュメントに記載されている情報に関連しているか
+# 以下をご確認ください：
+# - 関連するドキュメントがアップロードされているか
+# - ドキュメントが正常に処理され、STATE_ACTIVEになっているか
+# - 質問の内容がドキュメントに記載されている情報に関連しているか
 
-別の質問をお試しいただくか、関連するドキュメントを追加してください。"""
-                    print("Response overridden due to lack of grounding metadata")
+# 別の質問をお試しいただくか、関連するドキュメントを追加してください。"""
+#                     print("Response overridden due to lack of grounding metadata")
 
             return {
                 "message": response_text,

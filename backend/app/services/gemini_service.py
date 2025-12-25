@@ -26,6 +26,7 @@ class GeminiService:
         # Check if response has candidates
         candidates = response_data.get('candidates', [])
         if not candidates:
+            print("No candidates found in response")
             return citations
 
         candidate = candidates[0]
@@ -33,14 +34,23 @@ class GeminiService:
         # Look for grounding metadata in the candidate
         grounding = candidate.get('groundingMetadata', {})
 
+        if not grounding:
+            print("No groundingMetadata found in candidate")
+        else:
+            print(f"Found groundingMetadata: {list(grounding.keys())}")
+
         # Extract file search results
         file_search_results = grounding.get('fileSearchResults', [])
+        print(f"Found {len(file_search_results)} file search results")
+
         for result in file_search_results:
             doc_name = result.get('documentName', '')
+            print(f"Processing citation from document: {doc_name}")
 
             # Filter by selected documents if specified
             if document_names and doc_name:
                 if doc_name not in document_names:
+                    print(f"Skipping document {doc_name} (not in selected documents)")
                     continue
 
             citations.append(Citation(
@@ -66,15 +76,14 @@ class GeminiService:
 
             # Add system instruction first (if no history)
             if not history or len(history) == 0:
-                system_instruction = """あなたはドキュメントベースのアシスタントです。以下のルールを厳守してください：
+                system_instruction = """あなたはドキュメント検索アシスタントです。以下のルールに従ってください：
 
-1. **必ずアップロードされたドキュメントの情報のみを使用**してください
-2. ドキュメントに記載されていない情報については、一般知識や外部情報を使用しないでください
-3. ドキュメントに情報が見つからない場合は、「アップロードされたドキュメントには、この質問に関する情報が見つかりませんでした。」と明確に伝えてください
-4. 回答する際は、必ずドキュメントからの引用を含めてください
-5. 推測や想像で答えないでください
+重要なルール：
+- アップロードされたドキュメントの内容に基づいて回答してください
+- ドキュメントに情報がない場合は、「提供されたドキュメントには、ご質問に関する情報が見つかりませんでした」と回答してください
+- 一般知識や推測で答えず、ドキュメントの内容のみを参照してください
 
-これらのルールを守り、ドキュメントに基づいた正確な情報のみを提供してください。"""
+このルールを守って、正確な情報を提供してください。"""
 
                 contents.append({
                     "role": "user",
@@ -82,7 +91,7 @@ class GeminiService:
                 })
                 contents.append({
                     "role": "model",
-                    "parts": [{"text": "承知しました。アップロードされたドキュメントの情報のみを使用して回答します。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
+                    "parts": [{"text": "了解しました。提供されたドキュメントの内容のみを参照して回答します。"}]
                 })
 
             if history:
@@ -149,21 +158,10 @@ class GeminiService:
             # Extract citations (filtered by selected documents)
             citations = self._extract_citations(response_data, document_names)
 
-            # Check if citations exist
-            # If no citations are found, it means the information is not in the documents
-            if not citations:
-                # Check if the response already mentions document unavailability
-                if "アップロードされたドキュメントには" not in response_text and \
-                   "ドキュメントに" not in response_text and \
-                   "情報が見つかりませんでした" not in response_text:
-                    # Override the response to be more explicit
-                    response_text = """申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。
-
-以下をご確認ください：
-- ドキュメントが正常にアップロードされているか
-- 質問内容がドキュメントの内容に関連しているか
-
-別の質問をお試しいただくか、関連するドキュメントをアップロードしてください。"""
+            # Log citation information for debugging
+            print(f"Extracted {len(citations)} citations from response")
+            if citations:
+                print(f"Citation documents: {[c.document_name for c in citations]}")
 
             return {
                 "message": response_text,
@@ -190,15 +188,14 @@ class GeminiService:
 
             # Add system instruction first (if no history)
             if not history or len(history) == 0:
-                system_instruction = """あなたはドキュメントベースのアシスタントです。以下のルールを厳守してください：
+                system_instruction = """あなたはドキュメント検索アシスタントです。以下のルールに従ってください：
 
-1. **必ずアップロードされたドキュメントの情報のみを使用**してください
-2. ドキュメントに記載されていない情報については、一般知識や外部情報を使用しないでください
-3. ドキュメントに情報が見つからない場合は、「アップロードされたドキュメントには、この質問に関する情報が見つかりませんでした。」と明確に伝えてください
-4. 回答する際は、必ずドキュメントからの引用を含めてください
-5. 推測や想像で答えないでください
+重要なルール：
+- アップロードされたドキュメントの内容に基づいて回答してください
+- ドキュメントに情報がない場合は、「提供されたドキュメントには、ご質問に関する情報が見つかりませんでした」と回答してください
+- 一般知識や推測で答えず、ドキュメントの内容のみを参照してください
 
-これらのルールを守り、ドキュメントに基づいた正確な情報のみを提供してください。"""
+このルールを守って、正確な情報を提供してください。"""
 
                 contents.append({
                     "role": "user",
@@ -206,7 +203,7 @@ class GeminiService:
                 })
                 contents.append({
                     "role": "model",
-                    "parts": [{"text": "承知しました。アップロードされたドキュメントの情報のみを使用して回答します。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
+                    "parts": [{"text": "了解しました。提供されたドキュメントの内容のみを参照して回答します。"}]
                 })
 
             if history:

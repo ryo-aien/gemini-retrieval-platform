@@ -63,6 +63,28 @@ class GeminiService:
         try:
             # Prepare conversation history
             contents = []
+
+            # Add system instruction first (if no history)
+            if not history or len(history) == 0:
+                system_instruction = """あなたはドキュメントベースのアシスタントです。以下のルールを厳守してください：
+
+1. **必ずアップロードされたドキュメントの情報のみを使用**してください
+2. ドキュメントに記載されていない情報については、一般知識や外部情報を使用しないでください
+3. ドキュメントに情報が見つからない場合は、「アップロードされたドキュメントには、この質問に関する情報が見つかりませんでした。」と明確に伝えてください
+4. 回答する際は、必ずドキュメントからの引用を含めてください
+5. 推測や想像で答えないでください
+
+これらのルールを守り、ドキュメントに基づいた正確な情報のみを提供してください。"""
+
+                contents.append({
+                    "role": "user",
+                    "parts": [{"text": system_instruction}]
+                })
+                contents.append({
+                    "role": "model",
+                    "parts": [{"text": "承知しました。アップロードされたドキュメントの情報のみを使用して回答します。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
+                })
+
             if history:
                 for msg in history:
                     contents.append({
@@ -127,6 +149,22 @@ class GeminiService:
             # Extract citations (filtered by selected documents)
             citations = self._extract_citations(response_data, document_names)
 
+            # Check if citations exist
+            # If no citations are found, it means the information is not in the documents
+            if not citations:
+                # Check if the response already mentions document unavailability
+                if "アップロードされたドキュメントには" not in response_text and \
+                   "ドキュメントに" not in response_text and \
+                   "情報が見つかりませんでした" not in response_text:
+                    # Override the response to be more explicit
+                    response_text = """申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。
+
+以下をご確認ください：
+- ドキュメントが正常にアップロードされているか
+- 質問内容がドキュメントの内容に関連しているか
+
+別の質問をお試しいただくか、関連するドキュメントをアップロードしてください。"""
+
             return {
                 "message": response_text,
                 "citations": citations
@@ -149,6 +187,28 @@ class GeminiService:
         try:
             # Prepare conversation history
             contents = []
+
+            # Add system instruction first (if no history)
+            if not history or len(history) == 0:
+                system_instruction = """あなたはドキュメントベースのアシスタントです。以下のルールを厳守してください：
+
+1. **必ずアップロードされたドキュメントの情報のみを使用**してください
+2. ドキュメントに記載されていない情報については、一般知識や外部情報を使用しないでください
+3. ドキュメントに情報が見つからない場合は、「アップロードされたドキュメントには、この質問に関する情報が見つかりませんでした。」と明確に伝えてください
+4. 回答する際は、必ずドキュメントからの引用を含めてください
+5. 推測や想像で答えないでください
+
+これらのルールを守り、ドキュメントに基づいた正確な情報のみを提供してください。"""
+
+                contents.append({
+                    "role": "user",
+                    "parts": [{"text": system_instruction}]
+                })
+                contents.append({
+                    "role": "model",
+                    "parts": [{"text": "承知しました。アップロードされたドキュメントの情報のみを使用して回答します。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
+                })
+
             if history:
                 for msg in history:
                     contents.append({

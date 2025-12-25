@@ -19,13 +19,15 @@ app = FastAPI(
 )
 
 # CORS configuration
+# 環境変数ALLOWED_ORIGINSからカンマ区切りで取得、設定がない場合はlocalhostのみ許可
+allowed_origins = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173,http://localhost:3000,http://frontend:5173"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "http://frontend:5173",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

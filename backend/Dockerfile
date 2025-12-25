@@ -17,7 +17,9 @@ COPY app/ ./app/
 # 必要なディレクトリを作成
 RUN mkdir -p /app/temp /app/data
 
-EXPOSE 8000
+# Cloud RunはPORT環境変数を使用するため、デフォルト値を設定
+ENV PORT=8000
+EXPOSE $PORT
 
-# uvを使用してアプリケーションを起動
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# 本番環境用の起動コマンド（--reloadを削除し、PORTを環境変数から取得）
+CMD uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT

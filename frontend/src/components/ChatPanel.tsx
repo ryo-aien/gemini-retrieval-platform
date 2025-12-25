@@ -32,7 +32,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       onSendMessage(input.trim());
       setInput('');
       if (textareaRef.current) {
-        textareaRef.current.style.height = '32px';
+        textareaRef.current.style.height = '24px';
       }
     }
   };
@@ -49,7 +49,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     setInput(e.target.value);
     // Auto-resize textarea with max height
     e.target.style.height = 'auto';
-    const newHeight = Math.min(e.target.scrollHeight, 120);
+    const newHeight = Math.min(e.target.scrollHeight, 80);
     e.target.style.height = `${newHeight}px`;
   };
 
@@ -60,8 +60,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         <h2 className="text-lg font-semibold text-gray-200">チャット</h2>
       </div>
 
-      {/* Messages - 2/3 of available space */}
-      <div className="flex-[2] overflow-y-auto px-6 py-4">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-6 py-4">
         {messages.length === 0 && (
           <div className="flex items-center justify-center h-full text-center">
             <div>
@@ -119,10 +119,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       </div>
 
-      {/* Input Area - 1/3 of available space */}
-      <div className="flex-[1] px-6 py-6 flex items-center">
+      {/* Input Area */}
+      <div className="flex-shrink-0 px-6 py-4">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto w-full">
-          <div className="relative rounded-full border border-gray-700 flex items-center px-6 py-3 shadow-lg">
+          <div className="relative rounded-full border border-gray-700 flex items-center px-5 py-2 shadow-lg">
             <textarea
               ref={textareaRef}
               value={input}
@@ -130,21 +130,21 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               placeholder="入力を開始します..."
               disabled={isLoading}
               rows={1}
-              className="flex-1 bg-transparent text-gray-200 placeholder-gray-500 focus:outline-none resize-none overflow-hidden"
+              className="flex-1 bg-transparent text-gray-200 placeholder-gray-500 focus:outline-none resize-none overflow-hidden leading-normal"
               style={{
-                minHeight: '32px',
-                maxHeight: '120px'
+                minHeight: '24px',
+                maxHeight: '80px'
               }}
             />
             <button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="flex-shrink-0 w-12 h-12 bg-white hover:bg-gray-100 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors ml-3 shadow-md"
+              className="flex-shrink-0 w-10 h-10 bg-white hover:bg-gray-100 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors ml-2 shadow-md"
             >
               {isLoading ? (
-                <Loader2 className="w-5 h-5 text-gray-800 animate-spin" />
+                <Loader2 className="w-4 h-4 text-gray-800 animate-spin" />
               ) : (
-                <Send className="w-5 h-5 text-gray-800" />
+                <Send className="w-4 h-4 text-gray-800" />
               )}
             </button>
           </div>

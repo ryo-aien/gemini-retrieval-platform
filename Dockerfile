@@ -12,8 +12,11 @@ RUN npm ci
 # フロントエンドコードをコピー
 COPY frontend/ ./
 
-# ビルド時の環境変数を設定（Cloud Run上では/apiにプロキシされる）
-ENV VITE_API_URL=""
+# ビルド時の環境変数を設定
+# Cloud Run統合デプロイ: VITE_API_URL=""（空文字列で同一オリジン）
+# 2サービスデプロイ: ビルド時に--build-env-varsで指定可能
+ARG VITE_API_URL=""
+ENV VITE_API_URL=$VITE_API_URL
 
 # 本番ビルドを実行
 RUN npm run build

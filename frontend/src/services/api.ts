@@ -7,7 +7,11 @@ import type {
   Report,
 } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// Cloud Run統合デプロイの場合、VITE_API_URLは空文字列（同一オリジン）
+// 開発環境の場合は、明示的に設定されているか、デフォルトでlocalhost:8000
+const API_URL = import.meta.env.VITE_API_URL !== undefined
+  ? import.meta.env.VITE_API_URL
+  : 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: `${API_URL}/api`,

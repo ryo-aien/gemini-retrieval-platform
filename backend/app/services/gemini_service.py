@@ -76,14 +76,16 @@ class GeminiService:
 
             # Add system instruction first (if no history)
             if not history or len(history) == 0:
-                system_instruction = """あなたはドキュメント検索アシスタントです。以下のルールに従ってください：
+                system_instruction = """あなたはドキュメント検索専用アシスタントです。以下の厳格なルールに従ってください：
 
-重要なルール：
-- アップロードされたドキュメントの内容に基づいて回答してください
-- ドキュメントに情報がない場合は、「提供されたドキュメントには、ご質問に関する情報が見つかりませんでした」と回答してください
-- 一般知識や推測で答えず、ドキュメントの内容のみを参照してください
+【絶対に守るべきルール】
+1. File Searchツールで検索された情報のみを使用して回答してください
+2. あなたの一般知識、学習済みの情報、常識は一切使用しないでください
+3. File Searchで情報が見つからない場合は、「申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。」と正確に回答してください
+4. 推測、憶測、想像で答えることは絶対に禁止です
+5. 必ずドキュメントからの引用に基づいて回答してください
 
-このルールを守って、正確な情報を提供してください。"""
+このルールに違反した場合、不正確な情報を提供することになります。必ず守ってください。"""
 
                 contents.append({
                     "role": "user",
@@ -91,7 +93,7 @@ class GeminiService:
                 })
                 contents.append({
                     "role": "model",
-                    "parts": [{"text": "了解しました。提供されたドキュメントの内容のみを参照して回答します。"}]
+                    "parts": [{"text": "承知いたしました。File Searchツールで検索された情報のみを使用し、一般知識は一切使用しません。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
                 })
 
             if history:
@@ -101,10 +103,15 @@ class GeminiService:
                         "parts": [{"text": msg.content}]
                     })
 
-            # Add current user message
+            # Add current user message with explicit instruction
+            # Prepend instruction to use File Search results only
+            enhanced_message = f"""以下の質問に、File Searchツールで検索されたドキュメントの情報のみを使用して回答してください。あなたの一般知識は使用しないでください。
+
+質問: {message}"""
+
             contents.append({
                 "role": "user",
-                "parts": [{"text": message}]
+                "parts": [{"text": enhanced_message}]
             })
 
             # Prepare request body with File Search Tool
@@ -113,9 +120,18 @@ class GeminiService:
                 "contents": contents,
                 "tools": [{
                     "file_search": {
-                        "file_search_store_names": [store_name]
+                        "file_search_store_names": [store_name],
+                        "dynamic_retrieval_config": {
+                            "mode": "MODE_DYNAMIC",
+                            "dynamic_threshold": 0.3
+                        }
                     }
                 }],
+                "tool_config": {
+                    "function_calling_config": {
+                        "mode": "ANY"
+                    }
+                },
                 "generationConfig": {
                     "temperature": 1.0,
                     "topK": 40,
@@ -163,6 +179,31 @@ class GeminiService:
             if citations:
                 print(f"Citation documents: {[c.document_name for c in citations]}")
 
+            # Check if grounding metadata exists
+            candidates = response_data.get('candidates', [])
+            has_grounding = False
+            if candidates:
+                grounding = candidates[0].get('groundingMetadata', {})
+                if grounding and grounding.get('fileSearchResults'):
+                    has_grounding = True
+
+            # If no grounding metadata found, it means File Search was not used
+            # Override response to indicate no information found in documents
+            if not has_grounding:
+                print("WARNING: No grounding metadata found - AI may have used general knowledge")
+                # Check if the response already indicates document unavailability
+                if "申し訳ございません" not in response_text and \
+                   "見つかりませんでした" not in response_text:
+                    response_text = """申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。
+
+以下をご確認ください：
+- 関連するドキュメントがアップロードされているか
+- ドキュメントが正常に処理され、STATE_ACTIVEになっているか
+- 質問の内容がドキュメントに記載されている情報に関連しているか
+
+別の質問をお試しいただくか、関連するドキュメントを追加してください。"""
+                    print("Response overridden due to lack of grounding metadata")
+
             return {
                 "message": response_text,
                 "citations": citations
@@ -188,14 +229,16 @@ class GeminiService:
 
             # Add system instruction first (if no history)
             if not history or len(history) == 0:
-                system_instruction = """あなたはドキュメント検索アシスタントです。以下のルールに従ってください：
+                system_instruction = """あなたはドキュメント検索専用アシスタントです。以下の厳格なルールに従ってください：
 
-重要なルール：
-- アップロードされたドキュメントの内容に基づいて回答してください
-- ドキュメントに情報がない場合は、「提供されたドキュメントには、ご質問に関する情報が見つかりませんでした」と回答してください
-- 一般知識や推測で答えず、ドキュメントの内容のみを参照してください
+【絶対に守るべきルール】
+1. File Searchツールで検索された情報のみを使用して回答してください
+2. あなたの一般知識、学習済みの情報、常識は一切使用しないでください
+3. File Searchで情報が見つからない場合は、「申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。」と正確に回答してください
+4. 推測、憶測、想像で答えることは絶対に禁止です
+5. 必ずドキュメントからの引用に基づいて回答してください
 
-このルールを守って、正確な情報を提供してください。"""
+このルールに違反した場合、不正確な情報を提供することになります。必ず守ってください。"""
 
                 contents.append({
                     "role": "user",
@@ -203,7 +246,7 @@ class GeminiService:
                 })
                 contents.append({
                     "role": "model",
-                    "parts": [{"text": "了解しました。提供されたドキュメントの内容のみを参照して回答します。"}]
+                    "parts": [{"text": "承知いたしました。File Searchツールで検索された情報のみを使用し、一般知識は一切使用しません。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
                 })
 
             if history:
@@ -213,10 +256,14 @@ class GeminiService:
                         "parts": [{"text": msg.content}]
                     })
 
-            # Add current user message
+            # Add current user message with explicit instruction
+            enhanced_message = f"""以下の質問に、File Searchツールで検索されたドキュメントの情報のみを使用して回答してください。あなたの一般知識は使用しないでください。
+
+質問: {message}"""
+
             contents.append({
                 "role": "user",
-                "parts": [{"text": message}]
+                "parts": [{"text": enhanced_message}]
             })
 
             # Prepare request body with File Search Tool
@@ -224,9 +271,18 @@ class GeminiService:
                 "contents": contents,
                 "tools": [{
                     "file_search": {
-                        "file_search_store_names": [store_name]
+                        "file_search_store_names": [store_name],
+                        "dynamic_retrieval_config": {
+                            "mode": "MODE_DYNAMIC",
+                            "dynamic_threshold": 0.3
+                        }
                     }
                 }],
+                "tool_config": {
+                    "function_calling_config": {
+                        "mode": "ANY"
+                    }
+                },
                 "generationConfig": {
                     "temperature": 1.0,
                     "topK": 40,

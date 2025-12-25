@@ -120,18 +120,9 @@ class GeminiService:
                 "contents": contents,
                 "tools": [{
                     "file_search": {
-                        "file_search_store_names": [store_name],
-                        "dynamic_retrieval_config": {
-                            "mode": "MODE_DYNAMIC",
-                            "dynamic_threshold": 0.3
-                        }
+                        "file_search_store_names": [store_name]
                     }
                 }],
-                "tool_config": {
-                    "function_calling_config": {
-                        "mode": "ANY"
-                    }
-                },
                 "generationConfig": {
                     "temperature": 1.0,
                     "topK": 40,
@@ -156,6 +147,8 @@ class GeminiService:
                 if response.status_code >= 400:
                     print(f"Gemini API error: {response.status_code}")
                     print(f"Response body: {response.text}")
+                    error_detail = response.text
+                    raise Exception(f"Gemini API returned {response.status_code}: {error_detail}")
 
                 response.raise_for_status()
                 response_data = response.json()
@@ -271,18 +264,9 @@ class GeminiService:
                 "contents": contents,
                 "tools": [{
                     "file_search": {
-                        "file_search_store_names": [store_name],
-                        "dynamic_retrieval_config": {
-                            "mode": "MODE_DYNAMIC",
-                            "dynamic_threshold": 0.3
-                        }
+                        "file_search_store_names": [store_name]
                     }
                 }],
-                "tool_config": {
-                    "function_calling_config": {
-                        "mode": "ANY"
-                    }
-                },
                 "generationConfig": {
                     "temperature": 1.0,
                     "topK": 40,
@@ -306,9 +290,10 @@ class GeminiService:
                 ) as response:
                     if response.status_code >= 400:
                         error_text = await response.aread()
+                        error_detail = error_text.decode()
                         print(f"Gemini API stream error: {response.status_code}")
-                        print(f"Response body: {error_text.decode()}")
-                        yield f"Error: {response.status_code}"
+                        print(f"Response body: {error_detail}")
+                        yield f"Error: Gemini API returned {response.status_code}: {error_detail}"
                         return
 
                     async for line in response.aiter_lines():
@@ -426,6 +411,8 @@ Keep it concise and action-oriented."""
                 if response.status_code >= 400:
                     print(f"Gemini API error: {response.status_code}")
                     print(f"Response body: {response.text}")
+                    error_detail = response.text
+                    raise Exception(f"Gemini API returned {response.status_code}: {error_detail}")
 
                 response.raise_for_status()
                 response_data = response.json()

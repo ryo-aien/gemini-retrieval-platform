@@ -32,23 +32,25 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       onSendMessage(input.trim());
       setInput('');
       if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
+        textareaRef.current.style.height = '32px';
       }
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
+  // Enterキーでの送信を無効化（送信ボタンのみで送信可能）
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  //   if (e.key === 'Enter' && !e.shiftKey) {
+  //     e.preventDefault();
+  //     handleSubmit(e);
+  //   }
+  // };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
-    // Auto-resize textarea
+    // Auto-resize textarea with max height
     e.target.style.height = 'auto';
-    e.target.style.height = `${e.target.scrollHeight}px`;
+    const newHeight = Math.min(e.target.scrollHeight, 120);
+    e.target.style.height = `${newHeight}px`;
   };
 
   return (
@@ -118,31 +120,31 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-dark-border px-6 py-4">
+      <div className="px-6 py-6">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="flex gap-3 items-center">
-            <div className="flex-1 relative">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="入力を開始します..."
-                disabled={isLoading}
-                rows={1}
-                className="w-full px-4 py-3 bg-dark-surface border border-dark-border rounded-lg text-gray-200 placeholder-gray-600 focus:outline-none focus:border-gray-500 resize-none max-h-32 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ minHeight: '24px' }}
-              />
-            </div>
+          <div className="relative bg-gray-800 rounded-full border border-gray-700 flex items-center px-6 py-3 shadow-lg">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={handleInputChange}
+              placeholder="入力を開始します..."
+              disabled={isLoading}
+              rows={1}
+              className="flex-1 bg-transparent text-gray-200 placeholder-gray-500 focus:outline-none resize-none overflow-hidden"
+              style={{
+                minHeight: '32px',
+                maxHeight: '120px'
+              }}
+            />
             <button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="flex-shrink-0 w-12 h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors"
+              className="flex-shrink-0 w-12 h-12 bg-white hover:bg-gray-100 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors ml-3 shadow-md"
             >
               {isLoading ? (
-                <Loader2 className="w-5 h-5 text-white animate-spin" />
+                <Loader2 className="w-5 h-5 text-gray-800 animate-spin" />
               ) : (
-                <Send className="w-5 h-5 text-white" />
+                <Send className="w-5 h-5 text-gray-800" />
               )}
             </button>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import SourcePanel from './components/SourcePanel';
 import ChatPanel from './components/ChatPanel';

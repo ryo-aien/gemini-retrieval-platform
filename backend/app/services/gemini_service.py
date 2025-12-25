@@ -79,9 +79,9 @@ class GeminiService:
                 system_instruction = """あなたはドキュメント検索専用アシスタントです。以下の厳格なルールに従ってください：
 
 【絶対に守るべきルール】
-1. File Searchツールで検索された情報のみを使用して回答してください
+1. toolsのfile_searchツールで検索された情報のみを使用して回答してください
 2. あなたの一般知識、学習済みの情報、常識は一切使用しないでください
-3. File Searchで情報が見つからない場合は、「申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。」と正確に回答してください
+3. toolsのfile_searchで情報が見つからない場合は、「申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。」と正確に回答してください
 4. 推測、憶測、想像で答えることは絶対に禁止です
 5. 必ずドキュメントからの引用に基づいて回答してください
 
@@ -93,7 +93,7 @@ class GeminiService:
                 })
                 contents.append({
                     "role": "model",
-                    "parts": [{"text": "承知いたしました。File Searchツールで検索された情報のみを使用し、一般知識は一切使用しません。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
+                    "parts": [{"text": "承知いたしました。toolsのfile_searchツールで検索された情報のみを使用し、一般知識は一切使用しません。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
                 })
 
             if history:
@@ -105,7 +105,7 @@ class GeminiService:
 
             # Add current user message with explicit instruction
             # Prepend instruction to use File Search results only
-            enhanced_message = f"""以下の質問に、File Searchツールで検索されたドキュメントの情報のみを使用して回答してください。あなたの一般知識は使用しないでください。
+            enhanced_message = f"""以下の質問に、toolsのfile_searchツールで検索されたドキュメントの情報のみを使用して回答してください。あなたの一般知識は使用しないでください。
 
 質問: {message}"""
 
@@ -225,9 +225,9 @@ class GeminiService:
                 system_instruction = """あなたはドキュメント検索専用アシスタントです。以下の厳格なルールに従ってください：
 
 【絶対に守るべきルール】
-1. File Searchツールで検索された情報のみを使用して回答してください
+1. toolsのfile_searchツールで検索された情報のみを使用して回答してください
 2. あなたの一般知識、学習済みの情報、常識は一切使用しないでください
-3. File Searchで情報が見つからない場合は、「申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。」と正確に回答してください
+3. toolsのfile_searchで情報が見つからない場合は、「申し訳ございません。アップロードされたドキュメントには、ご質問に関する情報が見つかりませんでした。」と正確に回答してください
 4. 推測、憶測、想像で答えることは絶対に禁止です
 5. 必ずドキュメントからの引用に基づいて回答してください
 
@@ -239,7 +239,7 @@ class GeminiService:
                 })
                 contents.append({
                     "role": "model",
-                    "parts": [{"text": "承知いたしました。File Searchツールで検索された情報のみを使用し、一般知識は一切使用しません。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
+                    "parts": [{"text": "承知いたしました。toolsのfile_searchツールで検索された情報のみを使用し、一般知識は一切使用しません。ドキュメントに情報がない場合は、その旨を明確にお伝えします。"}]
                 })
 
             if history:
@@ -250,7 +250,7 @@ class GeminiService:
                     })
 
             # Add current user message with explicit instruction
-            enhanced_message = f"""以下の質問に、File Searchツールで検索されたドキュメントの情報のみを使用して回答してください。あなたの一般知識は使用しないでください。
+            enhanced_message = f"""以下の質問に、toolsのfile_searchツールで検索されたドキュメントの情報のみを使用して回答してください。あなたの一般知識は使用しないでください。
 
 質問: {message}"""
 

@@ -56,12 +56,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   return (
     <div className="flex-1 flex flex-col bg-dark-bg h-full">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-dark-border">
+      <div className="flex-shrink-0 px-6 py-4 border-b border-dark-border">
         <h2 className="text-lg font-semibold text-gray-200">チャット</h2>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-4">
+      {/* Messages - 2/3 of available space */}
+      <div className="flex-[2] overflow-y-auto px-6 py-4">
         {messages.length === 0 && (
           <div className="flex items-center justify-center h-full text-center">
             <div>
@@ -119,10 +119,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className="px-6 py-6">
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="relative bg-gray-800 rounded-full border border-gray-700 flex items-center px-6 py-3 shadow-lg">
+      {/* Input Area - 1/3 of available space */}
+      <div className="flex-[1] px-6 py-6 flex items-center">
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto w-full">
+          <div className="relative rounded-full border border-gray-700 flex items-center px-6 py-3 shadow-lg">
             <textarea
               ref={textareaRef}
               value={input}

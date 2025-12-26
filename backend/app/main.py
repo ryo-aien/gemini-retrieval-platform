@@ -13,7 +13,7 @@ load_dotenv()
 
 # Create FastAPI app
 app = FastAPI(
-    title="NotebookLM Clone API",
+    title="gemini-retrieval-platform API",
     description="Document interaction system with Gemini File Search",
     version="0.1.0",
 )
@@ -55,7 +55,7 @@ async def health_check():
 async def root():
     """Root endpoint"""
     return {
-        "name": "NotebookLM Clone API",
+        "name": "gemini-retrieval-platform",
         "version": "0.1.0",
         "status": "running"
     }

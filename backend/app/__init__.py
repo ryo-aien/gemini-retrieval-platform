@@ -1,1 +1,1 @@
-"""NotebookLM Clone Backend Application"""
+"""gemini-retrieval-platform Backend Application"""

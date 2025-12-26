@@ -1,7 +1,7 @@
 [project]
-name = "notebooklm-clone-backend"
+name = "gemini-retrieval-platform-backend"
 version = "0.1.0"
-description = "NotebookLM-like document interaction system with Gemini File Search"
+description = "document interaction system with Gemini File Search"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.109.0",
